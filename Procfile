@@ -1,1 +1,1 @@
-web: java -jar target/HangManServer.jar -$PORT
+web: java -jar target/hangman-server-abzzezz.jar -$PORT
