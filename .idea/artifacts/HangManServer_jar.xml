@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="HangManServer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/HangManServer_jar</output-path>
+    <root id="archive" name="HangManServer.jar">
+      <element id="module-output" name="HangManServer" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Libraries/netty-all-4.1.52.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Libraries/json-20200518.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -9,7 +9,7 @@ public class Player {
     private final String playerName;
     private final UUID playerId;
     private int playerScore;
-    private PacketManager packetManager;
+    private final PacketManager packetManager;
 
     public Player(final String playerName, final UUID playerId, final PacketManager packetManager) {
         this.playerName = playerName;

@@ -1,15 +1,15 @@
 package ga.abzzezz.hangman.rooms;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RoomManager {
 
-    private final List<Room> rooms = new ArrayList<>();
+    private final List<Room> rooms = new CopyOnWriteArrayList<>();
 
     public void addRoom(final Room room) {
         rooms.add(room);

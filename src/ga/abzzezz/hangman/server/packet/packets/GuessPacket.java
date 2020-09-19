@@ -25,6 +25,6 @@ public class GuessPacket extends Packet {
 
     @Override
     public void receive(final String input) {
-        Main.ROOM_MANAGER.getRoomById(input).ifPresent(room -> room.getPlayerById(UUID.fromString(getAdditionalData().getString("player_identification"))).ifPresent(player -> room.check((char) getAdditionalData().getInt("letter"), player)));
+        Main.ROOM_MANAGER.getRoomById(input).ifPresent(room -> room.getPlayerById(UUID.fromString(getAdditionalData().getString("player_identification"))).ifPresent(player -> room.check(Character.toLowerCase((char) getAdditionalData().getInt("letter")), player)));
     }
 }
