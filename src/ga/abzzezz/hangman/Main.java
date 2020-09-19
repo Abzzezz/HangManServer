@@ -11,7 +11,7 @@ public class Main {
     public static final RoomManager ROOM_MANAGER = new RoomManager();
 
     public static void main(final String[] args) {
-        new Server(Integer.parseInt(args[0])).startServer();
         Logger.getAnonymousLogger().log(Level.INFO, "Starting server on port:" + args[0]);
+        new Server(Integer.parseInt(args[0])).startServer();
     }
 }
