@@ -1,24 +1,32 @@
 package ga.abzzezz.hangman.rooms;
 
-import ga.abzzezz.hangman.server.ClientHandler;
+import ga.abzzezz.hangman.server.packet.PacketManager;
+
+import java.util.UUID;
 
 public class Player {
 
     private final String playerName;
-    private final ClientHandler playerHandler;
+    private final UUID playerId;
     private int playerScore;
+    private PacketManager packetManager;
 
-    public Player(final String playerName, final ClientHandler playerHandler) {
+    public Player(final String playerName, final UUID playerId, final PacketManager packetManager) {
         this.playerName = playerName;
-        this.playerHandler = playerHandler;
+        this.playerId = playerId;
+        this.packetManager = packetManager;
     }
 
     public String getPlayerName() {
         return playerName;
     }
 
-    public ClientHandler getPlayerHandler() {
-        return playerHandler;
+    public PacketManager getPacketManager() {
+        return packetManager;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
     }
 
     public int getPlayerScore() {

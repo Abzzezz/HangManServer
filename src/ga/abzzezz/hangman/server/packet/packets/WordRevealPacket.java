@@ -1,20 +1,19 @@
 package ga.abzzezz.hangman.server.packet.packets;
 
-import ga.abzzezz.hangman.server.ClientHandler;
 import ga.abzzezz.hangman.server.packet.Packet;
+import ga.abzzezz.hangman.server.packet.PacketManager;
 
 import java.util.Optional;
 
 public class WordRevealPacket extends Packet {
 
-    public WordRevealPacket(final ClientHandler parent) {
+    private String word;
+    private int tries;
+    public WordRevealPacket(final PacketManager parent) {
         super("WORD_REVEAL", parent);
     }
 
-    private String word;
-    private int tries;
-
-    public WordRevealPacket(final ClientHandler parent, final String word, final int tries) {
+    public WordRevealPacket(final PacketManager parent, final String word, final int tries) {
         super("WORD_REVEAL", parent);
         this.word = word;
         this.tries = tries;

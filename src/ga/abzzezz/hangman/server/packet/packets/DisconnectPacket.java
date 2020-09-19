@@ -6,11 +6,12 @@ import ga.abzzezz.hangman.server.packet.Packet;
 import ga.abzzezz.hangman.server.packet.PacketManager;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public class SendWordPacket extends Packet {
+public class DisconnectPacket extends Packet {
 
-    public SendWordPacket(final PacketManager parent) {
-        super("WORD_SELECT", parent);
+    public DisconnectPacket(final PacketManager parent) {
+        super("DISCONNECT", parent);
     }
 
     @Override
@@ -20,12 +21,12 @@ public class SendWordPacket extends Packet {
 
     @Override
     public Optional<String> send() {
-        return Optional.of("NULL");
+        return Optional.empty();
     }
 
     @Override
     public void receive(final String input) {
-        final Optional<Room> optionalRoom = Main.ROOM_MANAGER.getRoomById(input);
-        optionalRoom.ifPresent(room -> room.setWord(getAdditionalData().getString("chosen_word")));
+        final Optional<Room> room = Main.ROOM_MANAGER.getRoomById(input);
+        room.ifPresent(room1 -> room1.getPlayerById(UUID.fromString(getAdditionalData().getString("player_identification"))).ifPresent(room1::removePlayer));
     }
 }

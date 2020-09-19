@@ -1,8 +1,8 @@
 package ga.abzzezz.hangman.server.packet.packets;
 
 import ga.abzzezz.hangman.rooms.Player;
-import ga.abzzezz.hangman.server.ClientHandler;
 import ga.abzzezz.hangman.server.packet.Packet;
+import ga.abzzezz.hangman.server.packet.PacketManager;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -11,11 +11,11 @@ public class PlayerUpdatePacket extends Packet {
 
     private Player player;
 
-    public PlayerUpdatePacket(final ClientHandler parent) {
+    public PlayerUpdatePacket(final PacketManager parent) {
         super("PLAYER_UPDATE", parent);
     }
 
-    public PlayerUpdatePacket(final ClientHandler parent, final Player player) {
+    public PlayerUpdatePacket(final PacketManager parent, final Player player) {
         super("PLAYER_UPDATE", parent);
         this.player = player;
     }

@@ -1,55 +1,49 @@
 package ga.abzzezz.hangman.server;
 
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Server {
 
-    private ServerSocket server;
-    private boolean running;
 
-    /**
-     * Start server on default port: 1010
-     */
+    public static final int PORT = 1010;
+
     public Server() {
-        try {
-            this.server = new ServerSocket(1010);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
      * Start new server & await clients
      */
     public void startServer() {
-        Logger.getAnonymousLogger().log(Level.INFO, "Starting up server");
-        if (isRunning()) throw new IllegalStateException("Server already running");
-        running = true;
+        final EventLoopGroup bossGroup = new NioEventLoopGroup();
+        final EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            final ServerBootstrap bootstrap = new ServerBootstrap()
+                    .group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ServerInitializer());
 
-        while (running) {
-            try {
-                new ClientHandler(server.accept()).start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            bootstrap.bind(PORT).sync().channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
         }
     }
 
     /**
      * Stop server
+     *
      * @throws IOException if server socket does not close properly
      */
     public void stopServer() throws IOException {
-        if (!isRunning()) throw new IllegalStateException("Server already idle");
-        running = false;
-        server.close();
+
     }
 
-    public boolean isRunning() {
-        return running;
-    }
 
 }

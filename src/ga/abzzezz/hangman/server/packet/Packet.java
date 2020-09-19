@@ -1,6 +1,5 @@
 package ga.abzzezz.hangman.server.packet;
 
-import ga.abzzezz.hangman.server.ClientHandler;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -9,12 +8,11 @@ public abstract class Packet {
 
     //The packets id
     private final String packetId;
+    private final PacketManager parent;
     //Packets own json
     protected JSONObject moreData;
     //JSON object to source additional data from
     private JSONObject additionalData;
-
-    private final ClientHandler parent;
 
 
     /**
@@ -22,7 +20,7 @@ public abstract class Packet {
      *
      * @param packetId packet id
      */
-    public Packet(final String packetId, final ClientHandler parent) {
+    public Packet(final String packetId, final PacketManager parent) {
         this.packetId = packetId;
         this.moreData = new JSONObject();
         this.parent = parent;
@@ -60,7 +58,7 @@ public abstract class Packet {
         return packetId;
     }
 
-    public ClientHandler getParent() {
+    public PacketManager getParent() {
         return parent;
     }
 }

@@ -1,8 +1,8 @@
 package ga.abzzezz.hangman.server.packet.packets;
 
 import ga.abzzezz.hangman.rooms.Player;
-import ga.abzzezz.hangman.server.ClientHandler;
 import ga.abzzezz.hangman.server.packet.Packet;
+import ga.abzzezz.hangman.server.packet.PacketManager;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -15,11 +15,11 @@ public class PlayerJoinPacket extends Packet {
 
     private Player player;
 
-    public PlayerJoinPacket(final ClientHandler parent) {
+    public PlayerJoinPacket(final PacketManager parent) {
         super("PLAYER_JOIN", parent);
     }
 
-    public PlayerJoinPacket(final Player player, final ClientHandler parent) {
+    public PlayerJoinPacket(final Player player, final PacketManager parent) {
         super("PLAYER_JOIN", parent);
         this.player = player;
     }

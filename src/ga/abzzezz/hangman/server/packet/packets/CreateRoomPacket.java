@@ -3,14 +3,14 @@ package ga.abzzezz.hangman.server.packet.packets;
 
 import ga.abzzezz.hangman.Main;
 import ga.abzzezz.hangman.rooms.Room;
-import ga.abzzezz.hangman.server.ClientHandler;
 import ga.abzzezz.hangman.server.packet.Packet;
+import ga.abzzezz.hangman.server.packet.PacketManager;
 
 import java.util.Optional;
 
 public class CreateRoomPacket extends Packet {
 
-    public CreateRoomPacket(final ClientHandler parent) {
+    public CreateRoomPacket(final PacketManager parent) {
         super("ROOM_CREATE", parent);
     }
 
