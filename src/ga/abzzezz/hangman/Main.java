@@ -8,6 +8,6 @@ public class Main {
     public static final RoomManager ROOM_MANAGER = new RoomManager();
 
     public static void main(String[] args) {
-        new Server().startServer();
+        new Server(Integer.parseInt(args[0])).startServer();
     }
 }

@@ -10,9 +10,10 @@ import java.io.IOException;
 public class Server {
 
 
-    public static final int PORT = 1010;
+    private int port = 1010;
 
-    public Server() {
+    public Server(final int port) {
+        this.port = port;
     }
 
     /**
@@ -27,7 +28,7 @@ public class Server {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ServerInitializer());
 
-            bootstrap.bind(PORT).sync().channel().closeFuture().sync();
+            bootstrap.bind(port).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
