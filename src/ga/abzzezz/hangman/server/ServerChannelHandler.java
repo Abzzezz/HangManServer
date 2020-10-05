@@ -27,13 +27,17 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
             final Optional<Player> remove = room.getPlayers().stream().filter(player -> player.getPacketManager().getChannel().equals(packetManager.getChannel())).findAny();
             remove.ifPresent(room::removePlayer);
         }
-
+        ctx.close().sync();
         Logger.getAnonymousLogger().log(Level.WARNING, "client disconnected:" + ctx.channel().remoteAddress().toString());
         super.handlerRemoved(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        for (final Room room : Main.ROOM_MANAGER.getRooms()) {
+            final Optional<Player> remove = room.getPlayers().stream().filter(player -> player.getPacketManager().getChannel().equals(packetManager.getChannel())).findAny();
+            remove.ifPresent(room::removePlayer);
+        }
         ctx.close().sync();
         super.exceptionCaught(ctx, cause);
     }
