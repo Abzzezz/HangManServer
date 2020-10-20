@@ -9,12 +9,19 @@ public class WordRevealPacket extends Packet {
 
     private String word;
     private int tries;
+
     public WordRevealPacket(final PacketManager parent) {
         super("WORD_REVEAL", parent);
     }
 
     public WordRevealPacket(final PacketManager parent, final String word, final int tries) {
         super("WORD_REVEAL", parent);
+        this.word = word;
+        this.tries = tries;
+    }
+
+    public WordRevealPacket(final String word, final int tries) {
+        super("WORD_REVEAL");
         this.word = word;
         this.tries = tries;
     }

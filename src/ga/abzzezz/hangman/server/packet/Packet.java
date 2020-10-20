@@ -8,9 +8,9 @@ public abstract class Packet {
 
     //The packets id
     private final String packetId;
-    private final PacketManager parent;
     //Packets own json
     protected JSONObject moreData;
+    private PacketManager parent;
     //JSON object to source additional data from
     private JSONObject additionalData;
 
@@ -27,6 +27,17 @@ public abstract class Packet {
     }
 
     /**
+     * Packet id constructor with given packet identifier
+     *
+     * @param packetId packet id
+     */
+    public Packet(final String packetId) {
+        this.packetId = packetId;
+        this.moreData = new JSONObject();
+    }
+
+    /**
+     * /**
      * Respond to received input
      *
      * @param input received input

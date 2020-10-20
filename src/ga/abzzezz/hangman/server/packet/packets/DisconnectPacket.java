@@ -26,7 +26,7 @@ public class DisconnectPacket extends Packet {
 
     @Override
     public void receive(final String input) {
-        final Optional<Room> room = Main.ROOM_MANAGER.getRoomById(input);
+        final Optional<Room> room = Main.ROOM_MANAGER.getRoomById(Integer.parseInt(input));
         room.ifPresent(room1 -> room1.getPlayerById(UUID.fromString(getAdditionalData().getString("player_identification"))).ifPresent(room1::removePlayer));
     }
 }

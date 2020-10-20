@@ -21,7 +21,7 @@ public class JoinRoomPacket extends Packet {
     @Override
     public Optional<String> respond(final String input) {
         final Player joinedPlayer = new Player(getAdditionalData().getString("player_name"), UUID.fromString(getAdditionalData().getString("player_identification")), getParent());
-        final Optional<Room> room = Main.ROOM_MANAGER.getRoomById(input);
+        final Optional<Room> room = Main.ROOM_MANAGER.getRoomById(Integer.parseInt(input));
 
         if (room.isPresent()) {
             room.get().getPlayers().forEach(player1 -> getParent().sendPacket(new PlayerJoinPacket(player1, getParent())));

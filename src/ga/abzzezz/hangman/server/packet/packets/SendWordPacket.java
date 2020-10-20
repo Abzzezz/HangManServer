@@ -13,6 +13,10 @@ public class SendWordPacket extends Packet {
         super("WORD_SELECT", parent);
     }
 
+    public SendWordPacket() {
+        super("WORD_SELECT");
+    }
+
     @Override
     public Optional<String> respond(String input) {
         return Optional.empty();
@@ -25,7 +29,7 @@ public class SendWordPacket extends Packet {
 
     @Override
     public void receive(final String input) {
-        final Optional<Room> optionalRoom = Main.ROOM_MANAGER.getRoomById(input);
+        final Optional<Room> optionalRoom = Main.ROOM_MANAGER.getRoomById(Integer.parseInt(input));
         optionalRoom.ifPresent(room -> room.setWord(getAdditionalData().getString("chosen_word")));
     }
 }

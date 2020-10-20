@@ -14,11 +14,15 @@ public class CreateRoomPacket extends Packet {
         super("ROOM_CREATE", parent);
     }
 
+    public CreateRoomPacket() {
+        super("ROOM_CREATE");
+    }
+
     @Override
     public Optional<String> respond(String input) {
-        final Room room = new Room(String.valueOf(System.currentTimeMillis() % 1000));
+        final Room room = new Room((int) (System.currentTimeMillis() % 1000));
         Main.ROOM_MANAGER.addRoom(room);
-        return Optional.of(room.getRoomId());
+        return Optional.of(String.valueOf(room.getRoomId()));
     }
 
     @Override

@@ -8,8 +8,8 @@ public class Player {
 
     private final String playerName;
     private final UUID playerId;
-    private int playerScore;
     private final PacketManager packetManager;
+    private int playerScore;
 
     public Player(final String playerName, final UUID playerId, final PacketManager packetManager) {
         this.playerName = playerName;

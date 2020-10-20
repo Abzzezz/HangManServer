@@ -20,6 +20,10 @@ public class PlayerUpdatePacket extends Packet {
         this.player = player;
     }
 
+    public PlayerUpdatePacket(final Player player) {
+        super("PLAYER_UPDATE");
+        this.player = player;
+    }
     @Override
     public Optional<String> respond(final String input) {
         return Optional.empty();

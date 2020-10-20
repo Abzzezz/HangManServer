@@ -5,12 +5,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.io.IOException;
-
 public class Server {
 
-
-    private int port = 1010;
+    private final int port;
 
     public Server(final int port) {
         this.port = port;
@@ -27,7 +24,6 @@ public class Server {
                     .group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ServerInitializer());
-
             bootstrap.bind(port).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -36,15 +32,4 @@ public class Server {
             workerGroup.shutdownGracefully();
         }
     }
-
-    /**
-     * Stop server
-     *
-     * @throws IOException if server socket does not close properly
-     */
-    public void stopServer() throws IOException {
-
-    }
-
-
 }

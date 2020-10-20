@@ -4,47 +4,51 @@ import ga.abzzezz.hangman.Main;
 import ga.abzzezz.hangman.rooms.Player;
 import ga.abzzezz.hangman.rooms.Room;
 import ga.abzzezz.hangman.server.packet.PacketManager;
+import ga.abzzezz.hangman.util.QuickLog;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ServerChannelHandler extends SimpleChannelInboundHandler<String> {
 
     private PacketManager packetManager;
 
     @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
+    public void handlerAdded(final ChannelHandlerContext ctx) {
         this.packetManager = new PacketManager(ctx.channel());
-        Logger.getAnonymousLogger().log(Level.INFO, "new client connected: " + ctx.channel().remoteAddress().toString());
+        QuickLog.log("new client connected", QuickLog.LogType.INFO);
     }
 
     @Override
     public void handlerRemoved(final ChannelHandlerContext ctx) throws Exception {
-        for (final Room room : Main.ROOM_MANAGER.getRooms()) {
-            final Optional<Player> remove = room.getPlayers().stream().filter(player -> player.getPacketManager().getChannel().equals(packetManager.getChannel())).findAny();
-            remove.ifPresent(room::removePlayer);
-        }
+        removePlayer(ctx.channel());
         ctx.close().sync();
-        Logger.getAnonymousLogger().log(Level.WARNING, "client disconnected:" + ctx.channel().remoteAddress().toString());
+        QuickLog.log("client disconnected, closing socket", QuickLog.LogType.INFO);
         super.handlerRemoved(ctx);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        for (final Room room : Main.ROOM_MANAGER.getRooms()) {
-            final Optional<Player> remove = room.getPlayers().stream().filter(player -> player.getPacketManager().getChannel().equals(packetManager.getChannel())).findAny();
-            remove.ifPresent(room::removePlayer);
-        }
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        removePlayer(ctx.channel());
         ctx.close().sync();
-        super.exceptionCaught(ctx, cause);
+        QuickLog.log("client exception caught, closing socket", QuickLog.LogType.WARNING);
     }
 
     @Override
-    protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final String readLine) throws Exception {
+    protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final String readLine) {
         packetManager.handlePacket(readLine);
+    }
+
+    private void removePlayer(final Channel playersChannel) {
+        loop:
+        for (final Room room : Main.ROOM_MANAGER.getRooms()) {
+            for (final Player player : room.getPlayers()) {
+                if (player.getPacketManager().getChannel().equals(playersChannel)) {
+                    room.removePlayer(player);
+                    break loop;
+                }
+            }
+        }
     }
 }
 

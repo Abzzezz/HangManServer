@@ -5,21 +5,23 @@ import ga.abzzezz.hangman.server.packet.packets.PlayerJoinPacket;
 import ga.abzzezz.hangman.server.packet.packets.PlayerUpdatePacket;
 import ga.abzzezz.hangman.server.packet.packets.SendWordPacket;
 import ga.abzzezz.hangman.server.packet.packets.WordRevealPacket;
+import ga.abzzezz.hangman.util.QuickLog;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class Room {
     /**
      * Room's id - determined by the current milis mod 1000
      */
-    private final String roomId;
+    private final int roomId;
+    /**
+     * List of joined players. Player is removed if he disconnects
+     */
+    private final List<Player> players = new ArrayList<>();
     /**
      * Word that is being guessed (always lowercase)
      */
@@ -32,39 +34,35 @@ public class Room {
      * Tries left
      */
     private int triesLeft;
-    /**
-     * List of joined players. Player is removed if he disconnects
-     */
-    private final List<Player> players = new ArrayList<>();
     private Player wordChooser;
 
-    public Room(final String roomId) {
+    public Room(final int roomId) {
         this.roomId = roomId;
     }
 
     /**
-     * Add player to list and send a join packet to all players
-     * @param player player to be added
+     * Add new Player to list and send a join packet to all players
+     *
+     * @param newPlayer new Player to be added
      */
-    public void join(final Player player) {
-        Logger.getAnonymousLogger().log(Level.INFO, "New player joined, name: " + player.getPlayerName());
-        players.add(player);
-        getPlayers().forEach(player1 -> player1.getPacketManager().sendPacket(new PlayerJoinPacket(player, player1.getPacketManager())));
-        if (player.getPlayerName().equals("Ali")) reset();
+    public void join(final Player newPlayer) {
+        players.add(newPlayer);
+
+        getPlayers().forEach(otherPlayer -> otherPlayer.getPacketManager().sendPacket(new PlayerJoinPacket(newPlayer, otherPlayer.getPacketManager())));
+        if (newPlayer.getPlayerName().equals("Ali")) reset();
     }
 
     /**
      * Choose a new word chooser and reset tries
      */
     public void reset() {
-        final Player wordSelector = players.get(ThreadLocalRandom.current().nextInt(players.size()));
-        wordSelector.getPacketManager().sendPacket(new SendWordPacket(wordSelector.getPacketManager()));
-        setWordChooser(wordSelector);
+        final Player newSelector = players.get(ThreadLocalRandom.current().nextInt(players.size()));
+        newSelector.getPacketManager().sendPacket(new SendWordPacket());
+        setWordChooser(newSelector);
         triesLeft = 11;
     }
 
     /**
-     *
      * @param character character to be checked
      * @param submitter player who submitted the character
      */
@@ -82,10 +80,9 @@ public class Room {
         if (word.chars().noneMatch(value -> value == character)) {
             triesLeft--;
         } else {
-            char[] chars = word.toCharArray();
             final StringBuilder builder = new StringBuilder(wordCensored);
-            for (int i = 0; i < chars.length; i++) {
-                if (chars[i] == character) {
+            for (int i = 0; i < word.toCharArray().length; i++) {
+                if (word.charAt(i) == character) {
                     builder.setCharAt(i, character);
                 }
             }
@@ -112,6 +109,7 @@ public class Room {
 
         if (players.isEmpty()) {
             Main.ROOM_MANAGER.getRooms().remove(this);
+            QuickLog.log("Closing room, no players left", QuickLog.LogType.INFO);
         } else updatePlayer(player);
     }
 
@@ -121,16 +119,14 @@ public class Room {
      * @param player player to be updated
      */
     public void updatePlayer(final Player player) {
-        players.forEach(allPlayers -> allPlayers.getPacketManager().sendPacket(new PlayerUpdatePacket(allPlayers.getPacketManager(), player)));
+        players.forEach(allPlayers -> allPlayers.getPacketManager().sendPacket(new PlayerUpdatePacket(player)));
     }
 
     /**
      * The censored word is send to all players
      */
     public void revealWord() {
-        for (final Player player : players) {
-            player.getPacketManager().sendPacket(new WordRevealPacket(player.getPacketManager(), wordCensored, triesLeft));
-        }
+        players.forEach(player -> player.getPacketManager().sendPacket(new WordRevealPacket(wordCensored, triesLeft)));
     }
 
     /**
@@ -140,7 +136,8 @@ public class Room {
      * @param word word to set to
      */
     public void setWord(final String word) {
-        this.word = word.toLowerCase();
+        this.word = word.toLowerCase().trim();
+        System.out.println(word);
         this.wordCensored = word.replaceAll(".", "_");
         revealWord();
     }
@@ -152,20 +149,21 @@ public class Room {
      * @return optional player
      */
     public Optional<Player> getPlayerById(final UUID searchId) {
-        return players.stream().filter(player -> player.getPlayerId().equals(searchId)).findAny();
+        for (final Player player : players) {
+            if (player.getPlayerId().equals(searchId)) return Optional.of(player);
+        }
+        return Optional.empty();
     }
 
-    public String getRoomId() {
+    public int getRoomId() {
         return roomId;
     }
 
-    public void setWordChooser(Player wordChooser) {
+    public void setWordChooser(final Player wordChooser) {
         this.wordChooser = wordChooser;
     }
 
     public List<Player> getPlayers() {
         return players;
     }
-
-
 }

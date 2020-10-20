@@ -13,8 +13,12 @@ public class GuessPacket extends Packet {
         super("GUESS_LETTER", parent);
     }
 
+    public GuessPacket() {
+        super("GUESS_LETTER");
+    }
+
     @Override
-    public Optional<String> respond(String input) {
+    public Optional<String> respond(final String input) {
         return Optional.empty();
     }
 
@@ -25,6 +29,7 @@ public class GuessPacket extends Packet {
 
     @Override
     public void receive(final String input) {
-        Main.ROOM_MANAGER.getRoomById(input).ifPresent(room -> room.getPlayerById(UUID.fromString(getAdditionalData().getString("player_identification"))).ifPresent(player -> room.check(Character.toLowerCase((char) getAdditionalData().getInt("letter")), player)));
+        Main.ROOM_MANAGER.getRoomById(Integer.parseInt(input)).ifPresent(room -> room.getPlayerById(UUID.fromString(getAdditionalData().getString("player_identification"))).ifPresent(player -> room.check(Character.toLowerCase((char) getAdditionalData().getInt("letter")), player)));
     }
+
 }
